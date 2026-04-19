@@ -4,3 +4,4 @@
   bio: {
   type: String
   },
+
