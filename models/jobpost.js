@@ -1,15 +1,41 @@
 const mongoose = require('mongoose');
 
 const jobPostSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  company: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  requirements: {
+    type: [String],
+    default: []
+  },
+  location: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['full-time', 'part-time', 'internship'],
+    required: true
+  },
+  salary: {
+    type: Number
+  },
   category: {
     type: String,
-    enum: ['Frontend', 'Backend', 'AI/ML', 'DevOps', 'Data Engineering', 'Other'],
-    required: true
+    enum: ['Frontend', 'Backend', 'AI/ML', 'DevOps', 'Data Engineering', 'Other']
   },
   totalSlots: {
     type: Number,
-    required: true,
-    min: [1, 'Total slots must be at least 1']
+    required: true
   },
   status: {
     type: String,
@@ -25,8 +51,6 @@ const jobPostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-}, { 
-  timestamps: true // Automatically manages createdAt and updatedAt
 });
 
 module.exports = mongoose.model('JobPost', jobPostSchema);
