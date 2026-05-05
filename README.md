@@ -14,7 +14,7 @@ GIU Nexus is a full-stack web application that connects university students with
 - Omar Hossam — 16008229 (T15)
 - Obay Wael — 16007846 (T15)
 - Hamza Omar — 16008124
-- Mostafa Osama — 16003877
+- Mostafa Osama — 16003877(T8)
 - Youssef Ayman — 16009521
 - Eyad Elsafty — 16003613
 
