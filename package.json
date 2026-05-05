@@ -1,0 +1,33 @@
+{
+  "name": "giu-nexus",
+  "version": "1.0.0",
+  "description": "GIU Nexus is a full-stack web application that connects university students with internships and jobs, while giving recruiters a smarter way to discover the right candidates. The platform integrates AI capabilities powered by the Hugging Face Inference API for automatic skill extraction, job classification, and personalized job recommendations.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/obayrihan/GIU-Nexus.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/obayrihan/GIU-Nexus/issues"
+  },
+  "homepage": "https://github.com/obayrihan/GIU-Nexus#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
