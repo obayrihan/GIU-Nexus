@@ -17,7 +17,7 @@ GIU Nexus is a full-stack web application that connects university students with
 - Mostafa Osama — 16003877(T8)
 - Youssef Ayman — 16009521
 - Eyad Elsafty — 16003613
-
+```
 project-root/
 │
 ├── config/
@@ -35,6 +35,6 @@ project-root/
 ├── server.js
 ├── package.json
 └── .env
-
+```
 ## Course
 Software Engineering — Spring 2026, German International University
