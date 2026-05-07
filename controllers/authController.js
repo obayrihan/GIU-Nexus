@@ -1,22 +1,54 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '7d'
-  });
-};
-
-const register = async (req, res) => {
+exports.register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    let { name, email, password, role } = req.body;
 
-    const userExists = await User.findOne({ email });
-
-    if (userExists) {
+    if (!name || !email || !password || !role) {
       return res.status(400).json({
-        message: 'User already exists'
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    email = email.toLowerCase();
+
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format",
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must contain at least one uppercase letter and one number",
+      });
+    }
+
+    if (!["jobSeeker", "recruiter"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already in use",
       });
     }
 
@@ -25,32 +57,52 @@ const register = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role,
+      status: role === "recruiter" ? "pending" : "approved",
     });
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRE }
+    );
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id)
+      success: true,
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
     });
 
-  } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
+  } catch (err) {
+    next(err);
   }
 };
 
-const login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password required",
+      });
+    }
+
+    email = email.toLowerCase(); 
 
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(401).json({
-        message: 'Invalid email or password'
+        success: false,
+        message: "Invalid email or password",
       });
     }
 
@@ -58,25 +110,30 @@ const login = async (req, res) => {
 
     if (!isMatch) {
       return res.status(401).json({
-        message: 'Invalid email or password'
+        success: false,
+        message: "Invalid email or password",
       });
     }
 
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id)
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRE }
+    );
+
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
     });
 
-  } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
+  } catch (err) {
+    next(err);
   }
-};
-
-module.exports = {
-  register,
-  login
 };
