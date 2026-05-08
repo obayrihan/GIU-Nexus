@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 const User = require('../models/User');
 const hf = require('../services/hfService');
 
@@ -105,7 +105,7 @@ exports.extractSkills = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-=======
+};
 const User = require("../models/User");
 
 const getProfile = async (req, res, next) => {
@@ -150,5 +150,6 @@ const updateProfile = async (req, res, next) => {
 module.exports = {
   getProfile,
   updateProfile,
->>>>>>> 880531ede0eaef2d6e66c43f08e63483d3ee0662
+  changePassword,
+  extractSkills,
 };
