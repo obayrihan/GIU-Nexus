@@ -7,6 +7,7 @@ const {
   deleteJob,
   getJobs,
   getJobById,
+  recommendJobs
 } = require("../controllers/jobController");
 
 const { protect, authorize } = require("../middleware/auth");
