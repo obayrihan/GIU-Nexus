@@ -10,7 +10,4 @@ router.get(
   applicationController.getApplications
 );
 
-module.exports = {
-  applyToJob,
-  getApplications,
-};
+module.exports = router;
