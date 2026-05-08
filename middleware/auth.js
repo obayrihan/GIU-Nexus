@@ -15,8 +15,7 @@ const protect = async (req, res, next) => {
 
       req.user = await User.findById(decoded.id).select('-password');
 
-      next();
-
+      return next();
     } catch (error) {
       return res.status(401).json({
         message: 'Not authorized'
@@ -24,13 +23,24 @@ const protect = async (req, res, next) => {
     }
   }
 
-  if (!token) {
-    return res.status(401).json({
-      message: 'No token provided'
-    });
-  }
+  return res.status(401).json({
+    message: 'No token provided'
+  });
+};
+
+// ✅ ADD THIS
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: 'Forbidden: not authorized'
+      });
+    }
+    next();
+  };
 };
 
 module.exports = {
-  protect
+  protect,
+  authorize // ✅ export it
 };
