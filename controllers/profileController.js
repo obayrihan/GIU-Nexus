@@ -1,15 +1,48 @@
-
 const User = require('../models/User');
 const hf = require('../services/hfService');
 
+// @desc  Get logged-in user's profile
+// @route GET /api/v1/profile
+// @access Private
+const getProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc  Update profile (name, bio, profilePicture)
+// @route PATCH /api/v1/profile
+// @access Private
+const updateProfile = async (req, res, next) => {
+  try {
+    const { name, bio, profilePicture } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { name, bio, profilePicture },
+      { new: true, runValidators: true }
+    ).select('-password');
+    res.status(200).json({
+      success: true,
+      user: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc  Change password while logged in
 // @route PATCH /api/v1/profile/change-password
-// @access Private (any logged-in user)
-exports.changePassword = async (req, res, next) => {
+// @access Private
+const changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
-    // Validate both fields are provided
     if (!currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
@@ -24,10 +57,8 @@ exports.changePassword = async (req, res, next) => {
       });
     }
 
-    // Fetch user with password (password is excluded by default in the schema)
     const user = await User.findById(req.user._id).select('+password');
 
-    // Check current password is correct
     const isMatch = await user.matchPassword(currentPassword);
     if (!isMatch) {
       return res.status(401).json({
@@ -36,7 +67,6 @@ exports.changePassword = async (req, res, next) => {
       });
     }
 
-    // Set new password — the User model pre-save hook will hash it automatically
     user.password = newPassword;
     await user.save();
 
@@ -52,11 +82,10 @@ exports.changePassword = async (req, res, next) => {
 // @desc  Extract skills from bio using HuggingFace NER model
 // @route POST /api/v1/profile/extract-skills
 // @access Job Seeker only
-exports.extractSkills = async (req, res, next) => {
+const extractSkills = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
 
-    // Bio must exist before we can extract skills from it
     if (!user.bio || user.bio.trim() === '') {
       return res.status(400).json({
         success: false,
@@ -64,86 +93,37 @@ exports.extractSkills = async (req, res, next) => {
       });
     }
 
-    let cleanSkills = user.skills; // fallback — keep existing skills if AI fails
+    let cleanSkills = user.skills;
 
     try {
-      // Send bio text to HuggingFace NER model
       const result = await hf.tokenClassification({
         model: 'dslim/bert-base-NER',
         inputs: user.bio,
       });
 
-      // Filter for technology and organisation entities only
-      // B-MISC = beginning of misc entity (e.g. "React")
-      // I-MISC = continuation (e.g. "##JS" after "React")
-      // B-ORG  = organisation names (e.g. "MongoDB", "AWS")
       const extracted = result
         .filter((entity) =>
           ['B-MISC', 'I-MISC', 'B-ORG'].includes(
             entity.entity_group || entity.entity
           )
         )
-        .map((entity) => entity.word.replace(/^##/, '').trim()) // clean sub-word tokens
-        .filter((word) => word.length > 1); // remove single characters
+        .map((entity) => entity.word.replace(/^##/, '').trim())
+        .filter((word) => word.length > 1);
 
-      // Remove duplicates using Set
       cleanSkills = [...new Set(extracted)];
-
-      // Save extracted skills back to user profile
       user.skills = cleanSkills;
       await user.save();
     } catch (hfErr) {
-      // If HuggingFace fails, do NOT crash — just log and return existing skills
       console.error('HuggingFace NER error:', hfErr.message);
     }
 
     res.status(200).json({
       success: true,
-      skills: user.skills,     // what is now saved on their profile
-      extracted: cleanSkills,  // what the AI found this run
+      skills: user.skills,
+      extracted: cleanSkills,
     });
   } catch (err) {
     next(err);
-  }
-};
-const User = require("../models/User");
-
-const getProfile = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user._id).select("-password");
-
-    res.status(200).json({
-      success: true,
-      user,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const updateProfile = async (req, res, next) => {
-  try {
-    const { name, bio, profilePicture } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user._id,
-      {
-        name,
-        bio,
-        profilePicture,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    ).select("-password");
-
-    res.status(200).json({
-      success: true,
-      user: updatedUser,
-    });
-  } catch (error) {
-    next(error);
   }
 };
 
