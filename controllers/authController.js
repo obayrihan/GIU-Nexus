@@ -1,54 +1,22 @@
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
-exports.register = async (req, res, next) => {
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: '7d'
+  });
+};
+
+const register = async (req, res) => {
   try {
-    let { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !password || !role) {
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
       return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
-
-    email = email.toLowerCase();
-
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email format",
-      });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 6 characters",
-      });
-    }
-
-    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must contain at least one uppercase letter and one number",
-      });
-    }
-
-    if (!["jobSeeker", "recruiter"].includes(role)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid role",
-      });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "Email already in use",
+        message: 'User already exists'
       });
     }
 
@@ -57,52 +25,32 @@ exports.register = async (req, res, next) => {
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
-      role,
-      status: role === "recruiter" ? "pending" : "approved",
+      password: hashedPassword
     });
-
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRE }
-    );
 
     res.status(201).json({
-      success: true,
-      token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        status: user.status,
-      },
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id)
     });
 
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
   }
 };
 
-exports.login = async (req, res, next) => {
+const login = async (req, res) => {
   try {
-    let { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password required",
-      });
-    }
-
-    email = email.toLowerCase(); 
+    const { email, password } = req.body;
 
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
+        message: 'Invalid email or password'
       });
     }
 
@@ -110,30 +58,25 @@ exports.login = async (req, res, next) => {
 
     if (!isMatch) {
       return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
+        message: 'Invalid email or password'
       });
     }
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRE }
-    );
-
-    res.status(200).json({
-      success: true,
-      token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        status: user.status,
-      },
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id)
     });
 
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
   }
+};
+
+module.exports = {
+  register,
+  login
 };
