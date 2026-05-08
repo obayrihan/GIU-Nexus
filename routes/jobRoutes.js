@@ -17,6 +17,7 @@ router.get('/', getJobs);
 router.get('/:id', getJobById);
 
 
+
 const { protect, authorize } = require("../middleware/auth");
 
 
@@ -30,3 +31,12 @@ router.patch("/:id", protect, authorize("recruiter"), updateJob);
 router.delete("/:id", protect, authorize("recruiter"), deleteJob);
 
 module.exports = router;
+=======
+router.get('/jobs/recommended', protect, jobController.getRecommendedJobs);
+router.get('/jobs/my-jobs', protect, jobController.getMyJobs);
+router.get('/jobs/saved', protect, jobController.getSavedJobs);
+router.post('/jobs/:id/save', protect, jobController.toggleSaveJob);
+
+module.exports = router;
+
+
