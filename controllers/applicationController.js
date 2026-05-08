@@ -2,9 +2,28 @@ const Application = require('../models/Application');
 
 exports.applyToJob = async (req, res) => {
   try {
-    res.status(200).json({
+    const { jobId } = req.body;
+
+    const existingApplication = await Application.findOne({
+      applicant: req.user._id,
+      job: jobId,
+    });
+
+    if (existingApplication) {
+      return res.status(400).json({
+        success: false,
+        message: 'Already applied to this job',
+      });
+    }
+
+    const application = await Application.create({
+      applicant: req.user._id,
+      job: jobId,
+    });
+
+    res.status(201).json({
       success: true,
-      message: 'Apply to job',
+      application,
     });
   } catch (error) {
     res.status(500).json({
