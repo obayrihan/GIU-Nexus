@@ -25,12 +25,4 @@ router.patch("/:id", protect, authorize("recruiter"), updateJob);
 
 router.delete("/:id", protect, authorize("recruiter"), deleteJob);
 
-module.exports = {
-  createJob,
-  updateJob,
-  deleteJob,
-  getJobs,
-  getJobById,
-  getRecommendedJobs
-};
-
+module.exports = router;
