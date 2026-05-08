@@ -31,6 +31,6 @@ module.exports = {
   deleteJob,
   getJobs,
   getJobById,
-  recommendJobs
+  getRecommendedJobs
 };
 
