@@ -96,21 +96,52 @@ const extractSkills = async (req, res, next) => {
     let cleanSkills = user.skills;
 
     try {
-      const result = await hf.tokenClassification({
-        model: 'dslim/bert-base-NER',
-        inputs: user.bio,
-      });
+     const result = await hf.tokenClassification({
+  model: 'dslim/bert-base-NER',
+  inputs: user.bio,
+});
 
-      const extracted = result
-        .filter((entity) =>
-          ['B-MISC', 'I-MISC', 'B-ORG'].includes(
-            entity.entity_group || entity.entity
-          )
-        )
-        .map((entity) => entity.word.replace(/^##/, '').trim())
-        .filter((word) => word.length > 1);
+console.log(result);
 
-      cleanSkills = [...new Set(extracted)];
+const hfSkills = result
+  .filter((entity) =>
+    ['B-MISC', 'I-MISC', 'B-ORG'].includes(
+      entity.entity_group || entity.entity
+    )
+  )
+  .map((entity) => entity.word.replace(/^##/, '').trim())
+  .filter((word) => word.length > 1);
+
+const knownSkills = [
+  'javascript',
+  'react',
+  'node.js',
+  'mongodb',
+  'python',
+  'java',
+  'c++',
+  'express',
+  'sql',
+  'html',
+  'css',
+  'git',
+  'docker',
+  'tensorflow',
+  'machine learning',
+  'backend',
+  'frontend'
+];
+
+const bioLower = user.bio.toLowerCase();
+
+const keywordSkills = knownSkills.filter(skill =>
+  bioLower.includes(skill.toLowerCase())
+);
+
+cleanSkills = [...new Set([...hfSkills, ...keywordSkills])];
+
+
+      
       user.skills = cleanSkills;
       await user.save();
     } catch (hfErr) {
