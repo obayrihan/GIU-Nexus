@@ -7,7 +7,7 @@ const {
   deleteJob,
   getJobs,
   getJobById,
-  recommendJobs
+  getRecommendedJobs
 } = require("../controllers/jobController");
 
 const { protect, authorize } = require("../middleware/auth");
@@ -15,7 +15,7 @@ const { protect, authorize } = require("../middleware/auth");
 
 router.get("/", getJobs);
 
-router.get("/recommended", protect, recommendJobs);
+router.get("/recommended", protect, getRecommendedJobs);
 
 router.get("/:id", getJobById);
 
