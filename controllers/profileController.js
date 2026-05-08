@@ -96,13 +96,14 @@ const extractSkills = async (req, res, next) => {
     let cleanSkills = user.skills;
 
     try {
-      const result = await hf.tokenClassification({
-        model: 'dslim/bert-base-NER',
-        inputs: user.bio,
-      });
-      console.log(result);
+     const result = await hf.tokenClassification({
+  model: 'dslim/bert-base-NER',
+  inputs: user.bio,
+});
 
-      const hfSkills = result
+console.log(result);
+
+const hfSkills = result
   .filter((entity) =>
     ['B-MISC', 'I-MISC', 'B-ORG'].includes(
       entity.entity_group || entity.entity
@@ -138,6 +139,9 @@ const keywordSkills = knownSkills.filter(skill =>
 );
 
 cleanSkills = [...new Set([...hfSkills, ...keywordSkills])];
+
+
+      
       user.skills = cleanSkills;
       await user.save();
     } catch (hfErr) {

@@ -15,5 +15,4 @@ router.patch("/", protect, updateProfile);
 
 router.post('/extract-skills', protect, extractSkills);
 
-
 module.exports = router;

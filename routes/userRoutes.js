@@ -1,12 +1,29 @@
 const express = require('express');
 const router = express.Router();
 
-const userController = require('../controllers/userController');
+const {
+  getUsers,
+  getUserById,
+  updateUserStatus,
+  deleteUser,
+  getAdminStats
+} = require('../controllers/userController');
 
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 
-router.get('/profile', protect, userController.getUserProfile);
+// All routes below require admin access
+router.use(protect, authorize('admin'));
 
-router.put('/profile', userController.updateUserProfile);
+// Admin stats
+router.get('/stats', getAdminStats);
+
+// Users CRUD
+router.get('/', getUsers);
+
+router.get('/:id', getUserById);
+
+router.patch('/:id/status', updateUserStatus);
+
+router.delete('/:id', deleteUser);
 
 module.exports = router;
