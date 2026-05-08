@@ -29,10 +29,10 @@ const application = await Application.create({
 exports.getApplications = async (req, res) => {
   try {
     const applications = await Application.find({
-      applicant: req.user._id,
+      user: req.user._id,
     })
       .populate('job')
-      .populate('applicant', 'name email');
+      .populate('user', 'name email');
 
     res.status(200).json({
       success: true,
