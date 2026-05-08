@@ -1,9 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const jobController = require('../controllers/jobController');
 
-router.post('/jobs', jobController.createJob);
-router.get('/jobs', jobController.getJobs);
+const {
+  getJobs,
+  getJobById,
+} = require('../controllers/jobController');
+
+// Your routes
+router.get('/', getJobs);
+router.get('/:id', getJobById);
 
 router.get('/jobs/recommended', protect, jobController.getRecommendedJobs);
 router.get('/jobs/my-jobs', protect, jobController.getMyJobs);
