@@ -4,6 +4,7 @@ const User = require('../models/user');
 const protect = async (req, res, next) => {
   let token;
 
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -28,6 +29,27 @@ const protect = async (req, res, next) => {
     return res.status(401).json({
       message: 'No token provided'
     });
+
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      req.user = await User.findById(decoded.id).select('-password');
+
+      next();
+
+    } catch (error) {
+      return res.status(401).json({
+        message: 'Not authorized'
+      });
+    }
+
   }
 };
 
@@ -39,6 +61,7 @@ const authorize = (...roles) => {
       });
     }
 
+
     next();
   };
 };
@@ -47,3 +70,15 @@ module.exports = {
   protect,
   authorize
 };
+
+  if (!token) {
+    return res.status(401).json({
+      message: 'No token provided'
+    });
+  }
+};
+
+module.exports = {
+  protect
+};
+

@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router  = express.Router();
 const {
   getUsers,
@@ -18,6 +19,17 @@ const { protect, authorize } = require('../middleware/auth');
 // instead of repeating protect, authorize('admin') on each line.
 // ─────────────────────────────────────────────────────────────────────────────
 router.use(protect, authorize('admin'));
+=======
+const router = express.Router();
+
+const userController = require('../controllers/userController');
+
+const { protect } = require('../middleware/auth');
+
+router.get('/profile', protect, userController.getUserProfile);
+
+router.put('/profile', userController.updateUserProfile);
+
 
 // GET  /api/v1/users           → list all users (filterable + paginated)
 // GET  /api/v1/users/:id       → get one user by ID
