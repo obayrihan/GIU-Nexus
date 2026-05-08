@@ -1,0 +1,5 @@
+PORT=Your_Port_Here
+MONGO_URI=Link_MongoDB_Here
+JWT_SECRET=JWT_Token_Here
+JWT_EXPIRE=JWT_Expiry_Duration_Here
+HF_API_KEY=Hugging_Face_Access_Token_Here //readonly!
