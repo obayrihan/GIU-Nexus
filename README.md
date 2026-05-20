@@ -20,45 +20,108 @@ GIU Nexus is a full-stack web application that connects university students with
 ```
 GIU-Nexus/
 │
+├── client/
+│   │
+│   ├── public/
+│   │   └── vite.svg
+│   │
+│   ├── src/
+│   │   │
+|   |   |
+|   |   |
+|   |   ├── services/
+│   │   │   └── api.js
+|   |   |
+|   |   |
+│   │   ├── assets/
+│   │   │   └── react.svg
+│   │   │
+│   │   ├── components/
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Spinner.jsx
+│   │   │   ├── Modal.jsx
+│   │   │   ├── PrivateRoute.jsx
+│   │   │   └── RoleRoute.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── RegisterPage.jsx
+│   │   │   ├── ForgotPasswordPage.jsx
+│   │   │   ├── ResetPasswordPage.jsx
+│   │   │   ├── ProfilePage.jsx
+│   │   │   ├── EditProfilePage.jsx
+│   │   │   ├── ChangePasswordPage.jsx
+│   │   │   ├── JobListPage.jsx
+│   │   │   ├── JobDetailPage.jsx
+│   │   │   ├── RecommendedJobsPage.jsx
+│   │   │   ├── SavedJobsPage.jsx
+│   │   │   ├── RecruiterDashboard.jsx
+│   │   │   ├── CreateJobPage.jsx
+│   │   │   ├── EditJobPage.jsx
+│   │   │   ├── ApplicantsPage.jsx
+│   │   │   ├── MyApplicationsPage.jsx
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   ├── PendingRecruitersPage.jsx
+│   │   │   ├── AdminJobsPage.jsx
+│   │   │   └── AdminUsersPage.jsx
+│   │   │
+│   │   |
+│   │   │
+│   │   ├── utils/
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   ├── index.css
+│   │   └── App.css
+│   │
+│   ├── .env
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── README.md
+│   └── vite.config.js
+│
 ├── config/
 │   └── db.js
 │
 ├── controllers/
 │   ├── authController.js
-│   ├── userController.js
-│   ├── profileController.js
 │   ├── jobController.js
+│   ├── profileController.js
 │   └── applicationController.js
 │
-├── routes/
-│   ├── authRoutes.js
-│   ├── userRoutes.js
-│   ├── profileRoutes.js
-│   ├── jobRoutes.js
-│   └── applicationRoutes.js
+├── middleware/
+│   ├── auth.js
+│   └── errorHandler.js
 │
 ├── models/
 │   ├── User.js
 │   ├── JobPost.js
 │   └── Application.js
 │
-├── middleware/
-│   ├── auth.js
-│   └── errorHandler.js
+├── routes/
+│   ├── authRoutes.js
+│   ├── jobRoutes.js
+│   ├── profileRoutes.js
+│   ├── applicationRoutes.js
+│   └── userRoutes.js
 │
 ├── services/
-│   ├── hfService.js
-│   └── emailService.js
+│   └── hfService.js
 │
-├── utils/
-│   ├── generateToken.js
-│   └── cosineSimilarity.js
+├── POSTMAN TESTING SCREENSHOTS/
 │
 ├── server.js
 ├── package.json
+├── package-lock.json
 ├── .env
-├── .env.example
-├── .gitignore
 └── README.md
 ```
 ## Course
