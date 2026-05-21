@@ -1,0 +1,164 @@
+/* ProfileSkillSection.css */
+
+.pss {
+  padding: 24px 0;
+}
+
+/* ── Header row ── */
+.pss__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pss__title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pss__title { color: #f1f5f9; }
+}
+
+/* ── Extract button ── */
+.pss__extract-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #f0f4ff;
+  color: #4f46e5;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1.5px solid #c7d2fe;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+  white-space: nowrap;
+}
+
+.pss__extract-btn:hover:not(:disabled) {
+  background: #e0e7ff;
+  box-shadow: 0 2px 8px rgba(79,70,229,0.15);
+  transform: translateY(-1px);
+}
+
+.pss__extract-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pss__extract-btn {
+    background: #1e1b4b;
+    color: #a5b4fc;
+    border-color: #3730a3;
+  }
+  .pss__extract-btn:hover:not(:disabled) {
+    background: #312e81;
+  }
+}
+
+/* ── Inline error ── */
+.pss__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.82rem;
+  border: 1px solid #fecaca;
+  margin-bottom: 14px;
+  animation: fadeSlideDown 0.2s ease;
+}
+
+.pss__error-link {
+  font-weight: 700;
+  color: #6366f1;
+  text-decoration: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pss__error {
+    background: #2d0a0a;
+    color: #fca5a5;
+    border-color: #7f1d1d;
+  }
+}
+
+/* ── Success banner ── */
+.pss__success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid #bbf7d0;
+  margin-bottom: 14px;
+  animation: fadeSlideDown 0.2s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pss__success {
+    background: #052e16;
+    color: #86efac;
+    border-color: #166534;
+  }
+}
+
+/* ── Skills grid ── */
+.pss__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Pop-in animation for freshly extracted chips */
+.pss__grid--new .skill-chip {
+  animation: chipPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.pss__grid--new .skill-chip:nth-child(1)  { animation-delay: 0.00s; }
+.pss__grid--new .skill-chip:nth-child(2)  { animation-delay: 0.04s; }
+.pss__grid--new .skill-chip:nth-child(3)  { animation-delay: 0.08s; }
+.pss__grid--new .skill-chip:nth-child(4)  { animation-delay: 0.12s; }
+.pss__grid--new .skill-chip:nth-child(5)  { animation-delay: 0.16s; }
+.pss__grid--new .skill-chip:nth-child(6)  { animation-delay: 0.20s; }
+.pss__grid--new .skill-chip:nth-child(7)  { animation-delay: 0.24s; }
+.pss__grid--new .skill-chip:nth-child(8)  { animation-delay: 0.28s; }
+.pss__grid--new .skill-chip:nth-child(n+9) { animation-delay: 0.32s; }
+
+@keyframes chipPop {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shared spinner ── */
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(79,70,229,0.3);
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
