@@ -13,7 +13,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 
 import ProfilePage from './pages/ProfilePage';
 import EditProfilePage from './pages/EditProfilePage';
-import ChangePasswordPage from './pages/ChangePasswordPage';
+import ChangePasswordPage from "./pages/profile/ChangePasswordPage";
 
 import JobListPage from './pages/JobListPage';
 import JobDetailPage from './pages/JobDetailPage';
