@@ -2,8 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import JobCard from '../components/JobCard';
-import { AuthContext } from '../context/AuthContext';
-
+import { useAuth } from "../context/AuthContext";
 function Spinner() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem 0' }}>
@@ -44,8 +43,7 @@ function Section({ title, subtitle, children, action }) {
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-
+const { user, isAuthenticated } = useAuth();
   const [recentJobs, setRecentJobs] = useState([]);
   const [recommendedJobs, setRecommendedJobs] = useState([]);
   const [loadingRecent, setLoadingRecent] = useState(true);
