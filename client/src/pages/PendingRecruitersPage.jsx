@@ -35,9 +35,9 @@ const PendingRecruitersPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const { data } = await api.get("/api/v1/users", {
-          params: { role: "recruiter", status: "pending" },
-        });
+    const { data } = await api.get("/users", {
+      params: { role: "recruiter", status: "pending" },
+    });
         setRecruiters(Array.isArray(data) ? data : data.users || []);
       } catch (err) {
         setError(err?.response?.data?.message || "Failed to load pending recruiters.");
@@ -52,9 +52,9 @@ const PendingRecruitersPage = () => {
   const handleActionConfirm = async () => {
     setActionLoading(true);
     try {
-      await api.patch(`/api/v1/users/${modal.userId}/status`, {
-        status: modal.action,
-      });
+await api.patch(`/users/${modal.userId}/status`, {
+  status: modal.action,
+});
       // Remove from pending list after action
       setRecruiters((prev) => prev.filter((r) => r._id !== modal.userId));
       setModal({ open: false, userId: null, userName: "", action: "" });
