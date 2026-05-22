@@ -8,7 +8,7 @@
  */
 
 import React from "react";
-import "./Spinner.css";
+
 
 const SIZES = {
   sm: 18,
