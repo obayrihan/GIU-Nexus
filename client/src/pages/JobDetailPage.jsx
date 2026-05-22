@@ -1,9 +1,8 @@
-﻿import { useState, useEffect, useContext } from 'react';
+﻿import { useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import ApplicationStatusBadge from '../components/ApplicationStatusBadge';
-import { AuthContext } from '../context/AuthContext';
-
+import { useAuth } from "../context/AuthContext";
 const categoryColors = {
   Technology: { bg: '#E6F1FB', text: '#0C447C', border: '#185FA5' },
   Engineering: { bg: '#EAF3DE', text: '#27500A', border: '#3B6D11' },
@@ -175,8 +174,7 @@ function ApplyModal({ job, onClose, onSuccess }) {
 export default function JobDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-
+  const { user, isAuthenticated } = useAuth();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
