@@ -102,15 +102,16 @@ const RegisterPage = () => {
             required
           />
 
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="w-full border rounded-lg p-3"
-          >
-            <option value="student">Student</option>
-            <option value="recruiter">Recruiter</option>
-          </select>
+<select
+  name="role"
+  value={formData.role}
+  onChange={handleChange}
+  required
+  style={styles.input}
+>
+  <option value="jobSeeker">Job Seeker</option>
+  <option value="recruiter">Recruiter</option>
+</select>
 
           {formData.role === 'recruiter' && (
             <div className="bg-yellow-100 text-yellow-700 p-3 rounded">
