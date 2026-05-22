@@ -1,13 +1,7 @@
-﻿const ResetPasswordPage = () => {
-  return <div>Reset Password Page</div>;
-};
-
-export default ResetPasswordPage;
 import { useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
-import { AuthContext } from "../context/AuthContext";
-
+import { useAuth } from "../context/AuthContext";
 export default function ResetPasswordPage() {
   const { token } = useParams();
   const navigate = useNavigate();
