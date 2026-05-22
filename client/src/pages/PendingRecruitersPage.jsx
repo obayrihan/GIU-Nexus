@@ -10,9 +10,9 @@
  */
 
 import React, { useState, useEffect } from "react";
-import api from "/../services/api";
-import Spinner from "/../components/Spinner";
-import Modal from "/../components/Modal";
+import api from "../services/api";
+import Spinner from "../components/Spinner";
+import Modal from "../components/Modal";
 import "./PendingRecruitersPage.css";
 
 const PendingRecruitersPage = () => {
