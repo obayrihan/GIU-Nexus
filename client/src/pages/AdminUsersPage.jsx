@@ -11,9 +11,9 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import api from "../../services/api";
-import Spinner from "../../components/Spinner";
-import Modal from "../../components/Modal";
+import api from "../services/api";
+import Spinner from "../components/Spinner";
+import Modal from "../components/Modal";
 import "./AdminUsersPage.css";
 
 /* ── Role badge colors ── */
