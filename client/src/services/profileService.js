@@ -13,7 +13,7 @@ import api from "./api";
 
 /* ─────────────────────────────────────────
    CHANGE PASSWORD
-   PATCH /api/v1/profile/change-password
+   PATCH /profile/change-password
 ───────────────────────────────────────── */
 
 /**
@@ -27,7 +27,7 @@ import api from "./api";
  * Callers should handle 401 ("Current password is incorrect") inline.
  */
 export const changePassword = async (currentPassword, newPassword) => {
-  const { data } = await api.patch("/api/v1/profile/change-password", {
+  const { data } = await api.patch("/profile/change-password", {
     currentPassword,
     newPassword,
   });
@@ -36,7 +36,7 @@ export const changePassword = async (currentPassword, newPassword) => {
 
 /* ─────────────────────────────────────────
    AI SKILL EXTRACTION
-   POST /api/v1/profile/extract-skills
+   POST /profile/extract-skills
 ───────────────────────────────────────── */
 
 /**
@@ -51,7 +51,7 @@ export const changePassword = async (currentPassword, newPassword) => {
  * @returns {Promise<string[]>} — Array of extracted skill strings
  */
 export const extractSkillsFromBio = async () => {
-  const { data } = await api.post("/api/v1/profile/extract-skills");
+  const { data } = await api.post("/profile/extract-skills");
 
   if (!data.success || !Array.isArray(data.skills)) {
     throw new Error("Unexpected response from skill extraction endpoint.");
@@ -62,7 +62,7 @@ export const extractSkillsFromBio = async () => {
 
 /* ─────────────────────────────────────────
    GET PROFILE
-   GET /api/v1/profile
+   GET /profile
 ───────────────────────────────────────── */
 
 /**
@@ -71,6 +71,6 @@ export const extractSkillsFromBio = async () => {
  * @returns {Promise<Object>} — Profile object including name, bio, skills[], profilePicture
  */
 export const getProfile = async () => {
-  const { data } = await api.get("/api/v1/profile");
+  const { data } = await api.get("/profile");
   return data;
 };
