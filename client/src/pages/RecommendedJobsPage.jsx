@@ -1,82 +1,68 @@
-import { useState, useEffect } from 'react';
-import api from '../services/api';
-import SaveJobButton from '../components/SaveJobButton';
-import Spinner from '../components/Spinner';
+import { useState } from "react";
+import api from "../services/api";
 
-const RecommendedJobsPage = () => {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const SaveJobButton = ({ jobId, initiallySaved = false, disabled = false }) => {
+  const [saved, setSaved] = useState(initiallySaved);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        const res = await api.get('/jobs/recommended');
-        setJobs(res.data.jobs || []);
-      } catch (err) {
-        setError('Failed to load AI recommendations');
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const handleToggle = async () => {
+    if (disabled || loading) return;
+
+    const previousSaved = saved;
+
+    setSaved(!previousSaved);
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await api.post(`/jobs/${jobId}/save`);
+
+      if (typeof res.data.saved === "boolean") {
+        setSaved(res.data.saved);
       }
-    };
-
-    fetchRecommendations();
-  }, []);
-
-  if (loading) return <Spinner />;
-  if (error) return <div className="text-center text-red-500 py-12">{error}</div>;
+    } catch (err) {
+      setSaved(previousSaved);
+      setError(err.response?.data?.message || "Failed to update saved job.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">AI Recommended Jobs</h1>
-        <p className="text-gray-600 mt-2">Personalized based on your skills profile</p>
-      </div>
+    <div>
+      <button
+        type="button"
+        onClick={handleToggle}
+        disabled={disabled || loading}
+        style={{
+          ...styles.button,
+          opacity: disabled || loading ? 0.6 : 1,
+        }}
+      >
+        {loading ? "Saving..." : saved ? "★ Saved" : "☆ Save"}
+      </button>
 
-      {jobs.length === 0 ? (
-        <div className="text-center py-16 text-gray-500">
-          No recommendations available yet. Update your skills in profile.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {jobs.map((job) => (
-            <div key={job._id} className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl transition">
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="font-semibold text-xl">{job.title}</h3>
-                  <p className="text-gray-600">{job.company}</p>
-                </div>
-                {job.score && (
-                  <div className="px-4 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                    {Math.round(job.score * 100)}% Match
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {job.requirements?.slice(0, 5).map((skill, idx) => (
-                  <span key={idx} className="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-6 pt-4 border-t flex justify-between items-center">
-                <SaveJobButton jobId={job._id} />
-                <a 
-                  href={`/jobs/${job._id}`} 
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  View Details →
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {error && <p style={styles.error}>{error}</p>}
     </div>
   );
 };
 
-export default RecommendedJobsPage;
+const styles = {
+  button: {
+    border: "1px solid #d1d5db",
+    backgroundColor: "#fff",
+    color: "#111827",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600",
+  },
+  error: {
+    color: "#dc2626",
+    fontSize: "13px",
+    marginTop: "6px",
+  },
+};
+
+export default SaveJobButton;
