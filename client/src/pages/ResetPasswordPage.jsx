@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -6,8 +6,7 @@ export default function ResetPasswordPage() {
   const { token } = useParams();
   const navigate = useNavigate();
 
-  const { login } = useContext(AuthContext);
-
+const { login } = useAuth();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] =
     useState("");
