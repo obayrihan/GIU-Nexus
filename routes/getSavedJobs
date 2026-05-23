@@ -1,0 +1,17 @@
+exports.getSavedJobs = async (req, res) => {
+  try {
+    const User = require("../models/User");
+
+    const user = await User.findById(req.user._id).populate("savedJobs");
+
+    res.status(200).json({
+      success: true,
+      jobs: user.savedJobs || [],
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
