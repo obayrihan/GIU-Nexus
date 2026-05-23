@@ -2,6 +2,186 @@
 
 GIU Nexus is a full-stack web application that connects university students with internships and jobs, while giving recruiters a smarter way to discover the right candidates. The platform integrates AI capabilities powered by the Hugging Face Inference API for automatic skill extraction, job classification, and personalized job recommendations.
 
+
+```bash
+npm run dev
+```
+
+Production-style server:
+
+```bash
+npm start
+```
+
+Backend runs on:
+
+```text
+http://localhost:5000
+```
+
+## 4. Run Frontend
+
+Path:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus\client
+```
+
+Development server:
+
+```bash
+npm run dev
+```
+
+Frontend usually runs on:
+
+```text
+http://localhost:5173
+```
+
+Build frontend:
+
+```bash
+npm run build
+```
+
+Preview frontend build:
+
+```bash
+npm run preview
+```
+
+Lint frontend:
+
+```bash
+npm run lint
+```
+
+## 5. Demo Admin Command
+
+This creates or resets one admin user in the configured MongoDB database.
+
+Path:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus
+```
+
+Command:
+
+```bash
+npm run demo:admin
+```
+
+Default login:
+
+```text
+Email: admin@giu-nexus.demo
+Password: Admin123
+```
+
+## 6. Demo Seed Command
+
+This creates demo users, recruiters, jobs, saved jobs, and applications.
+
+Path:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus
+```
+
+Safe additive seed:
+
+```bash
+npm run demo:seed -- --jobs=120
+```
+
+Clean reset seed:
+
+```bash
+npm run demo:seed -- --reset --jobs=120
+```
+
+Warning: `--reset` deletes seeded/demo applications and matching demo users/jobs before recreating them.
+
+Default seeded accounts:
+
+```text
+Admin email: admin@giu-nexus.demo
+Admin password: Admin123
+Demo user password: Password123
+```
+
+## 7. Dependencies
+
+Backend dependencies:
+
+```text
+@huggingface/inference
+bcryptjs
+cors
+dotenv
+express
+jsonwebtoken
+mongoose
+```
+
+Backend dev dependency:
+
+```text
+nodemon
+```
+
+Frontend dependencies:
+
+```text
+axios
+react
+react-dom
+react-router-dom
+```
+
+Frontend dev dependencies:
+
+```text
+@eslint/js
+@types/react
+@types/react-dom
+@vitejs/plugin-react
+eslint
+eslint-plugin-react-hooks
+eslint-plugin-react-refresh
+globals
+vite
+```
+
+## 8. Recommended Run Order
+
+Terminal 1:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus
+npm install
+npm run demo:admin
+npm run demo:seed -- --jobs=120
+npm run dev
+```
+
+Terminal 2:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus\client
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+
 ## Tech Stack
 - MongoDB, Express.js, React, Node.js (MERN)
 - Hugging Face Inference API
