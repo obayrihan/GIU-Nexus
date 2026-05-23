@@ -1,84 +1,102 @@
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+﻿import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import { useAuth } from "../context/AuthContext";
-
-function LoginPage() {
-  const { login } = useAuth();
+const LoginPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+const { login } = useAuth();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const redirectTo = location.state?.from?.pathname || "/dashboard";
-
-  const handleChange = (event) => {
-    setFormData((current) => ({
-      ...current,
-      [event.target.name]: event.target.value,
-    }));
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError("");
-    setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
-      await login(formData);
-      navigate(redirectTo, { replace: true });
+      setLoading(true);
+      setError('');
+
+      const res = await api.post('/auth/login', formData);
+
+      const { token, user } = res.data;
+
+      login(user, token);
+
+      navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to log in. Please check your details.");
+      setError(
+        err.response?.data?.message || 'Login failed'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="auth-page">
-      <div className="auth-panel">
-        <h1>Login</h1>
-        <p>Access your GIU Nexus account.</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          Login
+        </h1>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <label>
-            Email
-            <input
-              autoComplete="email"
-              name="email"
-              onChange={handleChange}
-              required
-              type="email"
-              value={formData.email}
-            />
-          </label>
+        {error && (
+          <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+            {error}
+          </div>
+        )}
 
-          <label>
-            Password
-            <input
-              autoComplete="current-password"
-              name="password"
-              onChange={handleChange}
-              required
-              type="password"
-              value={formData.password}
-            />
-          </label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border rounded-lg p-3"
+            required
+          />
 
-          {error && <p className="form-alert form-alert-error">{error}</p>}
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full border rounded-lg p-3"
+            required
+          />
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white p-3 rounded-lg"
+          >
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
-        <div className="auth-links">
-          <Link to="/forgot-password">Forgot password?</Link>
-          <Link to="/register">Create an account</Link>
-        </div>
+        <p className="mt-4 text-center">
+          Don’t have an account?{' '}
+          <Link to="/register" className="text-blue-600">
+            Register
+          </Link>
+        </p>
       </div>
-    </section>
+    </div>
   );
-}
+};
 
 export default LoginPage;
+
+

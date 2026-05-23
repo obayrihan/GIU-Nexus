@@ -1,64 +1,6 @@
-const User = require('../models/user');
-const JobPost = require('../models/jobpost');
-const Application = require('../models/application');
-const bcrypt = require('bcryptjs');
-
-exports.createUser = async (req, res, next) => {
-  try {
-    let { name, email, password, role = 'jobSeeker', status = 'approved', bio, profilePicture, skills = [] } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Name, email, and password are required',
-      });
-    }
-
-    email = email.toLowerCase();
-
-    if (!['jobSeeker', 'recruiter', 'admin'].includes(role)) {
-      return res.status(400).json({ success: false, message: 'Invalid role' });
-    }
-
-    if (!['pending', 'approved', 'rejected'].includes(status)) {
-      return res.status(400).json({ success: false, message: 'Invalid status' });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: 'Email already in use' });
-    }
-
-    const user = await User.create({
-      name,
-      email,
-      password: await bcrypt.hash(password, 10),
-      role,
-      status,
-      bio,
-      profilePicture,
-      skills: Array.isArray(skills)
-        ? skills
-        : String(skills).split(',').map((skill) => skill.trim()).filter(Boolean),
-    });
-
-    res.status(201).json({
-      success: true,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        status: user.status,
-        bio: user.bio,
-        profilePicture: user.profilePicture,
-        skills: user.skills,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+const User = require('../models/User');
+const JobPost = require('../models/JobPost');
+const Application = require('../models/Application');
 
 // ============================================================
 // GET ALL USERS
@@ -255,10 +197,6 @@ exports.getAdminStats = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      usersByRole,
-      jobsByStatus,
-      appsByStatus,
-      topJobs,
       stats: {
         usersByRole,
         jobsByStatus,

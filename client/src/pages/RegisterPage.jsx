@@ -1,106 +1,142 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
-function RegisterPage() {
-  const { register } = useAuth();
+const RegisterPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "jobSeeker",
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleChange = (event) => {
-    setFormData((current) => ({
-      ...current,
-      [event.target.name]: event.target.value,
-    }));
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'student',
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError("");
-    setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
-      await register(formData);
-      navigate("/dashboard", { replace: true });
+      setLoading(true);
+      setError('');
+
+      const res = await api.post('/auth/register', formData);
+
+      if (formData.role === 'recruiter') {
+        setSuccess(
+          'Recruiter account created. Waiting for admin approval.'
+        );
+      } else {
+        setSuccess('Account created successfully');
+      }
+
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to create account. Please try again.");
+      setError(
+        err.response?.data?.message || 'Registration failed'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="auth-page">
-      <div className="auth-panel">
-        <h1>Register</h1>
-        <p>Create a GIU Nexus account.</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          Register
+        </h1>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <label>
-            Full name
-            <input
-              autoComplete="name"
-              name="name"
-              onChange={handleChange}
-              required
-              type="text"
-              value={formData.name}
-            />
-          </label>
+        {error && (
+          <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+            {error}
+          </div>
+        )}
 
-          <label>
-            Email
-            <input
-              autoComplete="email"
-              name="email"
-              onChange={handleChange}
-              required
-              type="email"
-              value={formData.email}
-            />
-          </label>
+        {success && (
+          <div className="bg-green-100 text-green-700 p-3 rounded mb-4">
+            {success}
+          </div>
+        )}
 
-          <label>
-            Password
-            <input
-              autoComplete="new-password"
-              minLength={6}
-              name="password"
-              onChange={handleChange}
-              required
-              type="password"
-              value={formData.password}
-            />
-          </label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full border rounded-lg p-3"
+            required
+          />
 
-          <label>
-            Account type
-            <select name="role" onChange={handleChange} value={formData.role}>
-              <option value="jobSeeker">Job seeker</option>
-              <option value="recruiter">Recruiter</option>
-            </select>
-          </label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border rounded-lg p-3"
+            required
+          />
 
-          {error && <p className="form-alert form-alert-error">{error}</p>}
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full border rounded-lg p-3"
+            required
+          />
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Creating account..." : "Register"}
+<select
+  name="role"
+  value={formData.role}
+  onChange={handleChange}
+  required
+  style={styles.input}
+>
+  <option value="jobSeeker">Job Seeker</option>
+  <option value="recruiter">Recruiter</option>
+</select>
+
+          {formData.role === 'recruiter' && (
+            <div className="bg-yellow-100 text-yellow-700 p-3 rounded">
+              Recruiter accounts require admin approval.
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white p-3 rounded-lg"
+          >
+            {loading ? 'Creating Account...' : 'Register'}
           </button>
         </form>
 
-        <div className="auth-links">
-          <Link to="/login">Already have an account?</Link>
-        </div>
+        <p className="mt-4 text-center">
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-600">
+            Login
+          </Link>
+        </p>
       </div>
-    </section>
+    </div>
   );
-}
+};
 
 export default RegisterPage;

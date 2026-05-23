@@ -1,52 +1,96 @@
 import { Link } from "react-router-dom";
-import CategoryBadge from "./CategoryBadge";
-import SaveJobButton from "./SaveJobButton";
 
-function JobCard({ applicationStatus, job, showScore = false }) {
-  if (!job) {
-    return null;
-  }
+const categoryColors = {
+  Frontend: "#dcfce7",
+  Backend: "#dbeafe",
+  "AI/ML": "#f3e8ff",
+  DevOps: "#ccfbf1",
+  "Data Engineering": "#ffedd5",
+  Other: "#e5e7eb",
+};
 
-  const score = typeof job.score === "number" ? Math.round(job.score * 100) : null;
+const JobCard = ({ job }) => {
+  if (!job) return null;
 
   return (
-    <article className="job-card">
-      <div className="job-card-header">
-        <div>
-          <h3>
-            <Link to={`/jobs/${job._id}`}>{job.title}</Link>
-          </h3>
-          <p>{job.company || job.createdBy?.name || "GIU Nexus recruiter"}</p>
-        </div>
-        <CategoryBadge category={job.category} />
+    <div style={styles.card}>
+      <div style={styles.header}>
+        <h3 style={styles.title}>{job.title}</h3>
+
+        {job.category && (
+          <span
+            style={{
+              ...styles.category,
+              backgroundColor: categoryColors[job.category] || "#e5e7eb",
+            }}
+          >
+            {job.category}
+          </span>
+        )}
       </div>
 
-      <div className="job-meta">
-        <span>{job.location || "Remote"}</span>
-        <span>{job.type || "Role"}</span>
-        <span>{job.status || "open"}</span>
-      </div>
+      <p style={styles.company}>{job.company}</p>
 
-      {showScore && score !== null && <span className="score-label">{score}% match</span>}
-      {applicationStatus && (
-        <p className={`application-note application-note-${applicationStatus}`}>
-          {applicationStatus === "not-applied" ? "Not applied yet" : `Applied: ${applicationStatus}`}
-        </p>
-      )}
+      <p style={styles.meta}>
+        {job.location}
+        {job.type && ` • ${job.type}`}
+      </p>
 
-      <div className="job-card-actions">
-        <Link className="text-button" to={`/jobs/${job._id}`}>
-          View details
-        </Link>
-        <SaveJobButton
-          key={`${job._id}-${Boolean(job.saved)}`}
-          jobId={job._id}
-          status={job.status}
-          initialSaved={job.saved}
-        />
-      </div>
-    </article>
+      {job.salary && <p style={styles.salary}>Salary: {job.salary}</p>}
+
+      <Link to={`/jobs/${job._id}`} style={styles.link}>
+        View Details
+      </Link>
+    </div>
   );
-}
+};
+
+const styles = {
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: "12px",
+    padding: "20px",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+    border: "1px solid #e5e7eb",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: "12px",
+  },
+  title: {
+    margin: 0,
+    fontSize: "18px",
+    color: "#111827",
+  },
+  company: {
+    color: "#4b5563",
+    marginBottom: "6px",
+  },
+  meta: {
+    color: "#6b7280",
+    fontSize: "14px",
+  },
+  salary: {
+    color: "#374151",
+    fontSize: "14px",
+  },
+  category: {
+    color: "#111827",
+    padding: "4px 10px",
+    borderRadius: "999px",
+    fontSize: "12px",
+    fontWeight: "600",
+    whiteSpace: "nowrap",
+  },
+  link: {
+    display: "inline-block",
+    marginTop: "12px",
+    color: "#4f46e5",
+    fontWeight: "600",
+    textDecoration: "none",
+  },
+};
 
 export default JobCard;

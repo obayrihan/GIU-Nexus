@@ -1,41 +1,45 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import { authService } from "../services/api";
-
-function ResetPasswordPage() {
+export default function ResetPasswordPage() {
   const { token } = useParams();
-  const { saveSession } = useAuth();
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+const { login } = useAuth();
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     setError("");
-    setMessage("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+    if (newPassword !== confirmPassword) {
+      return setError("Passwords do not match");
     }
 
-    setLoading(true);
-
     try {
-      const { data } = await authService.resetPassword(token, password);
-      if (data.token && data.user) {
-        saveSession(data);
-      }
-      setMessage(data.message || "Your password has been reset.");
-      setPassword("");
-      setConfirmPassword("");
+      setLoading(true);
+
+      const res = await api.patch(
+        `/auth/reset-password/${token}`,
+        {
+          newPassword,
+        }
+      );
+
+      login(res.data.token, res.data.user);
+
+      navigate("/");
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Password reset is not available yet. Please request a new link.",
+          "Failed to reset password"
       );
     } finally {
       setLoading(false);
@@ -43,50 +47,62 @@ function ResetPasswordPage() {
   };
 
   return (
-    <section className="auth-page">
-      <div className="auth-panel">
-        <h1>Reset Password</h1>
-        <p>Choose a new password for your GIU Nexus account.</p>
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="w-full max-w-md p-6 border rounded-lg shadow">
+        <h1 className="text-2xl font-bold mb-6">
+          Reset Password
+        </h1>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <label>
-            New password
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block mb-2">
+              New Password
+            </label>
+
             <input
-              autoComplete="new-password"
-              minLength={6}
-              onChange={(event) => setPassword(event.target.value)}
-              required
               type="password"
-              value={password}
+              className="w-full border p-2 rounded"
+              value={newPassword}
+              onChange={(e) =>
+                setNewPassword(e.target.value)
+              }
+              required
             />
-          </label>
+          </div>
 
-          <label>
-            Confirm password
+          <div className="mb-4">
+            <label className="block mb-2">
+              Confirm Password
+            </label>
+
             <input
-              autoComplete="new-password"
-              minLength={6}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              required
               type="password"
+              className="w-full border p-2 rounded"
               value={confirmPassword}
+              onChange={(e) =>
+                setConfirmPassword(e.target.value)
+              }
+              required
             />
-          </label>
+          </div>
 
-          {error && <p className="form-alert form-alert-error">{error}</p>}
-          {message && <p className="form-alert form-alert-success">{message}</p>}
+          {error && (
+            <p className="text-red-600 mb-3">
+              {error}
+            </p>
+          )}
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Resetting..." : "Reset password"}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white p-2 rounded"
+          >
+            {loading
+              ? "Resetting..."
+              : "Reset Password"}
           </button>
         </form>
-
-        <div className="auth-links">
-          <Link to="/login">Back to login</Link>
-        </div>
       </div>
-    </section>
+    </div>
   );
 }
-
-export default ResetPasswordPage;

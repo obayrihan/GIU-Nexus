@@ -1,19 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import Spinner from "./Spinner";
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-function RoleRoute({ allowedRoles = [] }) {
-  const { user, loading } = useAuth();
+const RoleRoute = ({ allowedRoles, children }) => {
+  const { user, isAuthenticated } = useAuth();
 
-  if (loading) {
-    return <Spinner label="Checking access" />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
 
-  if (!user || !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" replace />;
+  if (!allowedRoles.includes(user?.role)) {
+    return <Navigate to="/" replace />;
   }
 
-  return <Outlet />;
-}
+  return children;
+};
 
 export default RoleRoute;

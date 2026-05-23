@@ -1,20 +1,14 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import Spinner from "./Spinner";
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-function PrivateRoute() {
-  const { isAuthenticated, loading } = useAuth();
-  const location = useLocation();
-
-  if (loading) {
-    return <Spinner label="Checking your session" />;
-  }
+const PrivateRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />;
-}
+  return children;
+};
 
 export default PrivateRoute;

@@ -1,64 +1,121 @@
 import { useEffect, useState } from "react";
-import EmptyState from "../components/EmptyState";
-import JobCard from "../components/JobCard";
+import api from "../services/api";
 import Spinner from "../components/Spinner";
-import { applicationService, jobService } from "../services/api";
+import JobCard from "../components/JobCard";
+import SaveJobButton from "../components/SaveJobButton";
 
-function SavedJobsPage() {
+const SavedJobsPage = () => {
   const [jobs, setJobs] = useState([]);
-  const [applicationStatusByJob, setApplicationStatusByJob] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function loadJobs() {
+    const fetchSavedJobs = async () => {
       try {
-        const { data } = await jobService.getSavedJobs();
-        setJobs(data.jobs || []);
-        const applicationsResponse = await applicationService.getMyApplications();
-        const statusMap = {};
-        (applicationsResponse.data.applications || []).forEach((application) => {
-          if (application.job?._id) {
-            statusMap[String(application.job._id)] = application.status;
-          }
-        });
-        setApplicationStatusByJob(statusMap);
+        const res = await api.get("/jobs/saved");
+
+        const savedJobs =
+          res.data.jobs ||
+          res.data.savedJobs ||
+          res.data.data ||
+          res.data ||
+          [];
+
+        setJobs(Array.isArray(savedJobs) ? savedJobs : []);
       } catch (err) {
-        setError(err.response?.data?.message || "Could not load saved jobs.");
+        setError(err.response?.data?.message || "Failed to load saved jobs.");
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    loadJobs();
+    fetchSavedJobs();
   }, []);
 
-  return (
-    <div className="page-stack">
-      <section className="page-title">
-        <h1>Saved Jobs</h1>
-        <p>Jobs you have bookmarked.</p>
-      </section>
+  const removeFromList = (jobId) => {
+    setJobs((prev) => prev.filter((job) => job._id !== jobId));
+  };
 
-      {loading ? (
-        <Spinner label="Loading saved jobs" />
-      ) : error ? (
-        <p className="form-alert form-alert-error">{error}</p>
-      ) : jobs.length ? (
-        <div className="card-grid">
-          {jobs.map((job) => (
-            <JobCard
-              key={job._id}
-              job={{ ...job, saved: true }}
-              applicationStatus={applicationStatusByJob[String(job._id)] || "not-applied"}
-            />
-          ))}
+  if (loading) return <Spinner />;
+
+  return (
+    <div style={styles.container}>
+      <h1>Saved Jobs</h1>
+      <p>Jobs you bookmarked for later.</p>
+
+      {error && <p style={styles.error}>{error}</p>}
+
+      {!error && jobs.length === 0 && (
+        <div style={styles.emptyBox}>
+          <h3>No saved jobs</h3>
+          <p>Save jobs from the job listings page to see them here.</p>
         </div>
-      ) : (
-        <EmptyState message="You have not saved any jobs yet." />
       )}
+
+      <div style={styles.grid}>
+        {jobs.map((job) => (
+          <div key={job._id} style={styles.cardWrapper}>
+            <JobCard job={job} />
+
+            <div style={styles.actions}>
+              <SaveJobButton
+                jobId={job._id}
+                initiallySaved={true}
+                disabled={job.status && job.status !== "open"}
+              />
+
+              <button
+                type="button"
+                onClick={() => removeFromList(job._id)}
+                style={styles.removeButton}
+              >
+                Hide from list
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+const styles = {
+  container: {
+    padding: "32px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+    gap: "20px",
+    marginTop: "24px",
+  },
+  cardWrapper: {
+    backgroundColor: "#fff",
+    borderRadius: "12px",
+  },
+  actions: {
+    marginTop: "10px",
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+  },
+  removeButton: {
+    border: "none",
+    backgroundColor: "transparent",
+    color: "#6b7280",
+    cursor: "pointer",
+  },
+  emptyBox: {
+    backgroundColor: "#fff",
+    padding: "24px",
+    borderRadius: "12px",
+    border: "1px solid #e5e7eb",
+    maxWidth: "520px",
+    marginTop: "20px",
+  },
+  error: {
+    color: "#dc2626",
+  },
+};
 
 export default SavedJobsPage;

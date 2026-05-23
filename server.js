@@ -11,7 +11,6 @@ const userRoutes = require('./routes/userRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const profileRoutes = require('./routes/profileRoutes');
-const adminRoutes = require('./routes/adminRoutes');
 
 connectDB();
 
@@ -30,7 +29,6 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/jobs', jobRoutes);
 app.use('/api/v1/applications', applicationRoutes);
 app.use('/api/v1/profile', profileRoutes);
-app.use('/api/v1/admin', adminRoutes);
 
 // Error handler middleware
 app.use(errorHandler);

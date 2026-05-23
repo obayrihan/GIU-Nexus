@@ -1,12 +1,5 @@
-let hf;
+const { HfInference } = require('@huggingface/inference');
 
-try {
-  const { HfInference } = require("@huggingface/inference");
-  hf = new HfInference(process.env.HF_API_KEY);
-} catch {
-  hf = {
-    tokenClassification: async () => [],
-  };
-}
+const hf = new HfInference(process.env.HF_API_KEY);
 
 module.exports = hf;

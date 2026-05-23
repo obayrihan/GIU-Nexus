@@ -8,11 +8,7 @@ const {
   getJobs,
   getJobById,
   getRecommendedJobs,
-  getMyJobs,
-  getSavedJobs,
-  toggleSaveJob,
-  applyToJob,
-  getApplicants
+  getSavedJobs
 } = require("../controllers/jobController");
 
 const { protect, authorize } = require("../middleware/auth");
@@ -20,24 +16,14 @@ const { protect, authorize } = require("../middleware/auth");
 
 router.get("/", getJobs);
 
-router.get("/recommended", protect, authorize("jobSeeker"), getRecommendedJobs);
-
-router.get("/my-jobs", protect, authorize("recruiter"), getMyJobs);
-
-router.get("/saved", protect, authorize("jobSeeker"), getSavedJobs);
-
-router.post("/", protect, authorize("recruiter", "admin"), createJob);
-
-router.post("/:jobId/apply", protect, authorize("jobSeeker"), applyToJob);
-
-router.get("/:jobId/applicants", protect, authorize("recruiter"), getApplicants);
-
-router.post("/:id/save", protect, authorize("jobSeeker"), toggleSaveJob);
+router.get("/recommended", protect, getRecommendedJobs);
 
 router.get("/:id", getJobById);
 
-router.patch("/:id", protect, authorize("recruiter", "admin"), updateJob);
+router.post("/", protect, authorize("recruiter"), createJob);
 
-router.delete("/:id", protect, authorize("recruiter", "admin"), deleteJob);
+router.patch("/:id", protect, authorize("recruiter"), updateJob);
+
+router.delete("/:id", protect, authorize("recruiter"), deleteJob);
 
 module.exports = router;
