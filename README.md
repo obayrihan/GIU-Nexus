@@ -9,14 +9,14 @@ GIU Nexus is a full-stack web application that connects university students with
 Run backend install from the project root:
 
 ```bash
-\giu-nexus
+\giu-nexus\
 npm install
 ```
 
 Run frontend install from the client folder:
 
 ```bash
-\giu-nexus\client
+\giu-nexus\client\
 npm install
 ```
 
@@ -48,7 +48,7 @@ DEMO_SEED_RESET=false
 Path:
 
 ```bash
-\giu-nexus
+\giu-nexus\
 ```
 
 Development server:
@@ -73,7 +73,7 @@ http://localhost:5000
 Path:
 
 ```bash
-\giu-nexus\client
+\giu-nexus\client\
 ```
 
 Development server:
@@ -113,7 +113,7 @@ This creates or resets one admin user in the configured MongoDB database.
 Path:
 
 ```bash
-\giu-nexus
+\giu-nexus\
 ```
 
 Command:
@@ -136,7 +136,7 @@ This creates demo users, recruiters, jobs, saved jobs, and applications.
 Path:
 
 ```bash
-\giu-nexus
+\giu-nexus\
 ```
 
 Safe additive seed:
