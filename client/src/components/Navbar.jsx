@@ -1,55 +1,69 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const Navbar = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+function Navbar() {
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
-    <nav className="navbar">
-      <Link to="/">GIU Nexus</Link>
-      <Link to="/jobs">Jobs</Link>
+    <header className="site-header">
+      <nav className="navbar" aria-label="Primary navigation">
+        <Link className="brand" to="/">
+          GIU Nexus
+        </Link>
 
-      {isAuthenticated && user?.role === 'jobSeeker' && (
-        <>
-          <Link to="/profile">Profile</Link>
-          <Link to="/jobs/recommended">Recommended</Link>
-          <Link to="/jobs/saved">Saved Jobs</Link>
-          <Link to="/applications/my">My Applications</Link>
-        </>
-      )}
+        <div className="nav-links">
+          <NavLink to="/jobs">Jobs</NavLink>
+          {isAuthenticated && user?.role === "jobSeeker" && (
+            <>
+              <NavLink to="/profile">Profile</NavLink>
+              <NavLink to="/jobs/recommended">Recommended</NavLink>
+              <NavLink to="/jobs/saved">Saved</NavLink>
+              <NavLink to="/applications/my">Applications</NavLink>
+            </>
+          )}
+          {isAuthenticated && user?.role === "recruiter" && (
+            <>
+              <NavLink to="/recruiter/dashboard">Recruiter</NavLink>
+              <NavLink to="/recruiter/jobs/create">Create Job</NavLink>
+            </>
+          )}
+          {isAuthenticated && user?.role === "admin" && (
+            <>
+              <NavLink to="/admin/dashboard">Admin</NavLink>
+              <NavLink to="/admin/recruiters">Recruiters</NavLink>
+              <NavLink to="/admin/applications">Applications</NavLink>
+              <NavLink to="/admin/jobs">Jobs Admin</NavLink>
+              <NavLink to="/admin/users">Users</NavLink>
+            </>
+          )}
+        </div>
 
-      {isAuthenticated && user?.role === 'recruiter' && (
-        <>
-          <Link to="/recruiter/dashboard">Recruiter Dashboard</Link>
-          <Link to="/recruiter/jobs/create">Create Job</Link>
-        </>
-      )}
-
-      {isAuthenticated && user?.role === 'admin' && (
-        <>
-          <Link to="/admin/dashboard">Admin Dashboard</Link>
-          <Link to="/admin/users">Users</Link>
-          <Link to="/admin/recruiters">Pending Recruiters</Link>
-          <Link to="/admin/jobs">Jobs</Link>
-        </>
-      )}
-
-      {!isAuthenticated ? (
-        <>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-        </>
-      ) : (
-        <button onClick={handleLogout}>Logout</button>
-      )}
-    </nav>
+        <div className="nav-actions">
+          {isAuthenticated ? (
+            <>
+              <span className="user-chip">{user?.name || user?.email}</span>
+              <button type="button" onClick={handleLogout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login">Login</NavLink>
+              <NavLink className="button-link" to="/register">
+                Register
+              </NavLink>
+            </>
+          )}
+        </div>
+      </nav>
+    </header>
   );
-};
+}
 
 export default Navbar;

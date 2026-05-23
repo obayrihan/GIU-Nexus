@@ -1,30 +1,26 @@
 import { useState } from "react";
-import api from "../services/api";
+import { Link } from "react-router-dom";
+import { authService } from "../services/api";
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    setLoading(true);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError("");
-    setSuccessMessage("");
+    setMessage("");
+    setLoading(true);
 
     try {
-      await api.post("/auth/forgot-password", {
-        email,
-      });
-
-      setSuccessMessage(
-        "If an account exists, a reset email has been sent."
-      );
+      const { data } = await authService.forgotPassword(email);
+      setMessage(data.message || "Password reset instructions have been sent.");
     } catch (err) {
       setError(
-        err.response?.data?.message || "Something went wrong."
+        err.response?.data?.message ||
+          "Password reset is not available yet. Please contact support.",
       );
     } finally {
       setLoading(false);
@@ -32,48 +28,37 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="w-full max-w-md p-6 border rounded-lg shadow">
-        <h1 className="text-2xl font-bold mb-6">
-          Forgot Password
-        </h1>
+    <section className="auth-page">
+      <div className="auth-panel">
+        <h1>Forgot Password</h1>
+        <p>Enter your email and we will send reset instructions if the account exists.</p>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-2">Email</label>
-
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <label>
+            Email
             <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full border p-2 rounded"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              onChange={(event) => setEmail(event.target.value)}
               required
+              type="email"
+              value={email}
             />
-          </div>
+          </label>
 
-          {successMessage && (
-            <p className="text-green-600 mb-3">
-              {successMessage}
-            </p>
-          )}
+          {error && <p className="form-alert form-alert-error">{error}</p>}
+          {message && <p className="form-alert form-alert-success">{message}</p>}
 
-          {error && (
-            <p className="text-red-600 mb-3">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-black text-white p-2 rounded"
-          >
-            {loading ? "Sending..." : "Send Reset Link"}
+          <button type="submit" disabled={loading}>
+            {loading ? "Sending..." : "Send reset link"}
           </button>
         </form>
+
+        <div className="auth-links">
+          <Link to="/login">Back to login</Link>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
+export default ForgotPasswordPage;

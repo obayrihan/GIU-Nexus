@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const {
+  createUser,
   getUsers,
   getUserById,
   updateUserStatus,
@@ -18,6 +19,8 @@ router.use(protect, authorize('admin'));
 router.get('/stats', getAdminStats);
 
 // Users CRUD
+router.post('/', createUser);
+
 router.get('/', getUsers);
 
 router.get('/:id', getUserById);

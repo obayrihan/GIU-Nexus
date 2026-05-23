@@ -1,4 +1,5 @@
-const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const User = require('../models/user');
 const hf = require('../services/hfService');
 
 // @desc  Get logged-in user's profile
@@ -57,9 +58,9 @@ const changePassword = async (req, res, next) => {
       });
     }
 
-    const user = await User.findById(req.user._id).select('+password');
+    const user = await User.findById(req.user._id);
 
-    const isMatch = await user.matchPassword(currentPassword);
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
@@ -67,7 +68,7 @@ const changePassword = async (req, res, next) => {
       });
     }
 
-    user.password = newPassword;
+    user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
     res.status(200).json({

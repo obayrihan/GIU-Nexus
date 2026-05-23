@@ -1,9 +1,13 @@
-const Footer = () => {
+function Footer() {
   return (
-    <footer className="footer">
-      <p>GIU Nexus — AI-Powered Career & Talent Platform</p>
+    <footer className="site-footer">
+      <p>
+        <a href="https://github.com/obayrihan/GIU-Nexus" target="_blank" rel="noreferrer">
+          GIU Nexus connects students, alumni, and recruiters.
+        </a>
+      </p>
     </footer>
   );
-};
+}
 
 export default Footer;
