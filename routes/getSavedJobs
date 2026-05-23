@@ -1,6 +1,6 @@
 exports.getSavedJobs = async (req, res) => {
   try {
-    const User = require("../models/User");
+    const User = require("../models/user");
 
     const user = await User.findById(req.user._id).populate("savedJobs");
 

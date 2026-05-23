@@ -4,15 +4,18 @@ const router = express.Router();
 const {
   getProfile,
   updateProfile,
+  changePassword,
   extractSkills,
 } = require("../controllers/profileController");
 
-const { protect } = require("../middleware/auth");
+const { authorize, protect } = require("../middleware/auth");
 
 router.get("/", protect, getProfile);
 
 router.patch("/", protect, updateProfile);
 
-router.post('/extract-skills', protect, extractSkills);
+router.patch("/change-password", protect, changePassword);
+
+router.post('/extract-skills', protect, authorize("jobSeeker"), extractSkills);
 
 module.exports = router;

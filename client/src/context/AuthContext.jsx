@@ -1,51 +1,76 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { authService } from "../services/api";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => localStorage.getItem('token'));
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
+function getStoredSession() {
+  const storedToken = localStorage.getItem("token");
+  const storedUser = localStorage.getItem("user");
 
-    if (!storedUser) return null;
+  if (!storedToken || !storedUser) {
+    return { token: null, user: null };
+  }
 
-    try {
-      return JSON.parse(storedUser);
-    } catch {
-      localStorage.removeItem('user');
-      return null;
-    }
-  });
+  try {
+    return { token: storedToken, user: JSON.parse(storedUser) };
+  } catch {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    return { token: null, user: null };
+  }
+}
 
-  const login = (newToken, newUser) => {
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(newUser));
+export function AuthProvider({ children }) {
+  const [session, setSession] = useState(getStoredSession);
 
-    setToken(newToken);
-    setUser(newUser);
-  };
+  const saveSession = useCallback((data) => {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    setSession({ token: data.token, user: data.user });
+  }, []);
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const login = useCallback(async (credentials) => {
+    const { data } = await authService.login(credentials);
+    saveSession(data);
+    return data;
+  }, [saveSession]);
 
-    setToken(null);
-    setUser(null);
-  };
+  const register = useCallback(async (userData) => {
+    const { data } = await authService.register(userData);
+    saveSession(data);
+    return data;
+  }, [saveSession]);
 
-  const isAuthenticated = Boolean(token);
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setSession({ token: null, user: null });
+  }, []);
 
-  const value = {
-    user,
-    token,
-    login,
-    logout,
-    isAuthenticated,
-  };
+  const value = useMemo(
+    () => ({
+      user: session.user,
+      token: session.token,
+      loading: false,
+      login,
+      register,
+      logout,
+      saveSession,
+      isAuthenticated: Boolean(session.token && session.user),
+    }),
+    [session, login, register, logout, saveSession],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export function useAuth() {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth must be used inside AuthProvider");
+  }
+
+  return context;
+}
