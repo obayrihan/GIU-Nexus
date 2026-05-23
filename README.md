@@ -7,7 +7,7 @@ GIU Nexus is a full-stack web application that connects university students with
 - Hugging Face Inference API
 
 ## Team Members
-- Ali Ahmed — 16001891 (T9)
+- [Ali Ahmed — 16001891 (T9)](https://github.com/obayrihan/GIU-Nexus/commits?author=aliahmedd4)
 - Ali Sherif — 16006572 (T9)
 - Asser Ehab — 16003477 (T9)
 - Ahmed Rashad — 16004574 (T9)
