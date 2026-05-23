@@ -2,7 +2,56 @@
 
 GIU Nexus is a full-stack web application that connects university students with internships and jobs, while giving recruiters a smarter way to discover the right candidates. The platform integrates AI capabilities powered by the Hugging Face Inference API for automatic skill extraction, job classification, and personalized job recommendations.
 
+# GIU Nexus Running Instructions
 
+## 1. Install Dependencies
+
+Run backend install from the project root:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus
+npm install
+```
+
+Run frontend install from the client folder:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus\client
+npm install
+```
+
+## 2. Environment Variables
+
+Create a `.env` file in the project root, beside `server.js`:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_long_random_secret
+JWT_EXPIRE=7d
+HF_API_KEY=your_hugging_face_api_key
+```
+
+Optional demo credentials:
+
+```env
+DEMO_ADMIN_NAME=Demo Admin
+DEMO_ADMIN_EMAIL=admin@giu-nexus.demo
+DEMO_ADMIN_PASSWORD=Admin123
+DEMO_USER_PASSWORD=Password123
+DEMO_JOB_COUNT=120
+DEMO_SEED_RESET=false
+```
+
+## 3. Run Backend
+
+Path:
+
+```bash
+cd C:\Users\obayw\Desktop\Dev\giu-nexus
+```
+
+Development server:
 ```bash
 npm run dev
 ```
