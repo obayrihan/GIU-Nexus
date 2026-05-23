@@ -8,15 +8,15 @@ GIU Nexus is a full-stack web application that connects university students with
 
 ## Team Members
 - [Ali Ahmed — 16001891 (T9)](https://github.com/obayrihan/GIU-Nexus/commits?author=aliahmedd4)
-- Ali Sherif — 16006572 (T9)
-- Asser Ehab — 16003477 (T9)
-- Ahmed Rashad — 16004574 (T9)
-- Omar Hossam — 16008229 (T15)
-- Obay Wael — 16007846 (T15)
-- Hamza Omar — 16008124
-- Mostafa Osama — 16003877(T8)
-- Youssef Ayman — 16009521
-- Eyad Elsafty — 16003613
+- [Ali Sherif — 16006572 (T9)](https://github.com/obayrihan/GIU-Nexus/commits?author=Alielghayesh16006572)
+- [Asser Ehab — 16003477 (T9)](https://github.com/obayrihan/GIU-Nexus/commits?author=Asser16003477)
+- [Ahmed Rashad — 16004574 (T9)](https://github.com/obayrihan/GIU-Nexus/commits?author=AhmedR18506)
+- [Omar Hossam — 16008229 (T15)](https://github.com/obayrihan/GIU-Nexus/commits?author=omar-shokrey)
+- [Obay Wael — 16007846 (T15)](https://github.com/obayrihan/GIU-Nexus/commits?author=obayrihan)
+- [Hamza Omar — 16008124](https://github.com/obayrihan/GIU-Nexus/commits?author=hamzamohamed-tech)
+- [Mostafa Osama — 16003877(T8)](https://github.com/obayrihan/GIU-Nexus/commits?author=MostafaElhodaiby)
+- [Youssef Ayman — 16009521](https://github.com/obayrihan/GIU-Nexus/commits?author=Youssefayman-16009521)
+- [Eyad Elsafty — 16003613](https://github.com/obayrihan/GIU-Nexus/commits?author=eyadelsafty06-rgb)
 ```
 GIU-Nexus/
 │
